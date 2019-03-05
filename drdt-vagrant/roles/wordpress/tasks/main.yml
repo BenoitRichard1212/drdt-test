@@ -4,10 +4,17 @@
   args:
       chdir: "/vagrant"
 
-- name: Install Composer's dependencies
-  composer:
-    working_dir: /vagrant/
-    no_dev: no
+- name: check for auth.json
+    stat:
+      path: /vagrant/auth.json'
+    register: auth_json
+
+  - name: composer install
+    composer:
+      command: install
+      working_dir: /vagrant
+      no_dev: false
+    when: auth_json.stat.exists
 
 - name: Symlink wp-content in place
   file:
